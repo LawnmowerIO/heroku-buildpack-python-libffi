@@ -21,11 +21,17 @@ if (grep -Eiq "^\s*cffi" requirements.txt || grep -Eiq "^\s*cryptography" requir
   tar -zxvf tmp-libffi.tar.gz > /dev/null
   rm tmp-libffi.tar.gz
 
-  # Add libffi's to PKG_CONFIG_PATH
-  set-env PKG_CONFIG_PATH \$PKG_CONFIG_PATH:$(pwd)/lib/pkgconfig/
-  set-env LD_LIBRARY_PATH \$LD_LIBRARY_PATH:$(pwd)/lib/
-  #export LIBRARY_PATH=$LIBRARY_PATH:$(pwd)/lib/
+  # Add to paths for both build time and runtime.
+  PKG_CONFIG_PATH_ADDITION=$(pwd)/lib/pkgconfig/
+  export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$PKG_CONFIG_PATH_ADDITION
+  set-env PKG_CONFIG_PATH \$PKG_CONFIG_PATH:$PKG_CONFIG_PATH_ADDITION
+  
+  LD_LIBRARY_PATH_ADDITION=$(pwd)/lib/
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LD_LIBRARY_PATH_ADDITION
+  set-env LD_LIBRARY_PATH \$LD_LIBRARY_PATH:$LD_LIBRARY_PATH_ADDITION
+  
   echo "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}"
+  
   if [ -e $(pwd)/lib/pkgconfig/libffi.pc ]
   then
     echo "libffi.pc is in-place at $(pwd)/vendor/lib/pkgconfig/libffi.pc, libffi-based builds should work!"
