@@ -118,7 +118,9 @@ fi
 if [ ! "$SKIP_INSTALL" ]; then
   puts-step "Preparing Python runtime ($PYTHON_VERSION)"
   # curl http://envy-versions.s3.amazonaws.com/$PYTHON_VERSION.tar.bz2 -s | tar jx &> /dev/null
-  curl https://lang-python.s3.amazonaws.com/$STACK/runtimes/$PYTHON_VERSION.tar.gz -s | tar zxv -C .heroku/python &> /dev/null
+  python_runtime_url="https://lang-python.s3.amazonaws.com/$STACK/runtimes/$PYTHON_VERSION.tar.gz"
+  puts-step "   downloading from $python_runtime_url"
+  curl $python_runtime_url -s | tar zxv -C .heroku/python &> /dev/null
   if [[ $? != 0 ]] ; then
     puts-warn "Requested runtime ($PYTHON_VERSION) was not found."
     puts-warn "Aborting.  More info: https://devcenter.heroku.com/articles/python-support"
